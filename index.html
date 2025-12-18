@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Tabla FLEXI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Flexi i18n</h1>
+        </div>
+        
+        <div class="controls">
+            <div class="controls-grid">
+                <div class="form-group">
+                    <label>Países</label>
+                    <div class="countries-list">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="countries" value="Francia" checked>
+                            <span>Francia</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="countries" value="Italia" checked>
+                            <span>Italia</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="countries" value="Portugal" checked>
+                            <span>Portugal</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Cuotas (meses)</label>
+                    <div class="fees-list">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="fees" value="3" checked>
+                            <span>3</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="fees" value="6" checked>
+                            <span>6</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="fees" value="9" checked>
+                            <span>9</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="fees" value="12" checked>
+                            <span>12</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="fees" value="18" checked>
+                            <span>18</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="fees" value="24" checked>
+                            <span>24</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Servicing Fee (%)</label>
+                    <input type="number" id="servicingFee" placeholder="3.45" step="0.01" value="3.45">
+                </div>
+
+                <div class="form-group">
+                    <label>Texto Personalizado</label>
+                    <input type="text" id="assumedText" placeholder="ASSUMED BY SHOPPER" value="ASSUMED BY SHOPPER">
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button onclick="generateTable()" class="btn-generate">Generar Tabla</button>
+                <button onclick="downloadTableAsImage()" class="btn-download" id="downloadBtn" disabled>Descargar JPG</button>
+            </div>
+        </div>
+
+        <div id="tableContainer" class="table-container"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
