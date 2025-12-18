@@ -126,6 +126,15 @@ body {
     overflow: hidden;
 }
 
+.pp6-form-group {
+    margin-top: 20px;
+}
+
+.pp6-table-container table {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
 .header {
     padding: 30px;
     border-bottom: 1px solid var(--border);
@@ -231,6 +240,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 12px;
+    padding-top: 20px;
 }
 
 .fees-table-checkbox {

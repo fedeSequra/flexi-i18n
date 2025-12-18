@@ -101,7 +101,7 @@ function generateTable() {
     const fullContent = `
         <div class="table-content">
             <img src="https://cdn.prod.website-files.com/62b803c519da726951bd71c2/62b803c519da72c35fbd72a2_Logo.svg" alt="Logo" class="table-logo">
-            <h2>Table of Fees</h2>
+            <h2>Fractionated Payment (PP6) - Table of Fees/h2>
         </div>
         ${html}
     `;
@@ -452,7 +452,7 @@ function generatePP6Table() {
     const fullContent = `
         <div class="table-content">
             <img src="https://cdn.prod.website-files.com/62b803c519da726951bd71c2/62b803c519da72c35fbd72a2_Logo.svg" alt="Logo" class="table-logo">
-            <h2>PP6 - Fee Structure</h2>
+            <h2>Fractionated Payment (PP6) - Table of Fees</h2>
         </div>
         ${html}
     `;
