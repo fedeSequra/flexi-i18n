@@ -11,7 +11,12 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
+    <div class="topbar">
+        <button class="topbar-btn active" data-section="flexi" onclick="switchSection('flexi')">Flexi</button>
+        <button class="topbar-btn" data-section="pp6" onclick="switchSection('pp6')">PP6</button>
+    </div>
+    
+    <div class="container" id="flexiSection">
         <div class="header">
             <div class="header-wrapper">
                 <h1>Flexi</h1>
@@ -93,6 +98,32 @@
 
         <div id="tableContainer" class="table-container"></div>
         <div id="feesTableContainer" class="table-container fees-table-container" style="display: none;"></div>
+    </div>
+
+    <div class="container" id="pp6Section" style="display: none;">
+        <div class="header">
+            <div class="header-wrapper">
+                <h1>PP6</h1>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="form-group">
+                <label>Pegar datos de Total Amount y Monthly Fee</label>
+                <textarea id="pp6Data" rows="15" placeholder="Pega aquí los datos en formato:
+Total amount	Monthly Fee
+50 ≤ x < 200	2
+201 ≤ x < 400	3
+..."></textarea>
+            </div>
+
+            <div class="button-group">
+                <button onclick="generatePP6Table()" class="btn-generate">Generar Tabla PP6</button>
+                <button onclick="downloadPP6TableAsImage()" class="btn-download" id="downloadPP6Btn" disabled>Descargar JPG</button>
+            </div>
+        </div>
+
+        <div id="pp6TableContainer" class="table-container"></div>
     </div>
 
     <script src="script.js"></script>

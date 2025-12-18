@@ -76,13 +76,50 @@
 body {
     font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
     background: #fff;
-    padding: 20px;
+    padding: 0;
     color: var(--text);
+}
+
+.topbar {
+    background: var(--primary);
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    padding: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.topbar-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 20px 40px;
+    font-size: 1.1em;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-bottom: 4px solid transparent;
+    position: relative;
+}
+
+.topbar-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.topbar-btn.active {
+    background: white;
+    color: var(--primary);
+    border-bottom: 4px solid var(--primary);
+}
+
+.topbar-btn.active:hover {
+    background: white;
 }
 
 .container {
     max-width: 1300px;
-    margin: 0 auto;
+    margin: 20px auto;
     background: white;
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -138,17 +175,20 @@ body {
 }
 
 .form-group input[type="text"],
-.form-group input[type="number"] {
+.form-group input[type="number"],
+.form-group textarea {
     padding: 10px 12px;
     border: 1px solid var(--border);
     border-radius: 6px;
     font-size: 0.95em;
     transition: border-color 0.2s;
     font-family: 'Poppins', sans-serif;
+    resize: vertical;
 }
 
 .form-group input[type="text"]:focus,
-.form-group input[type="number"]:focus {
+.form-group input[type="number"]:focus,
+.form-group textarea:focus {
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(33, 207, 172, 0.1);

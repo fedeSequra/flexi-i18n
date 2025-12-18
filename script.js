@@ -1,6 +1,29 @@
 // Variables globales
 let tableData = {};
 let tableGenerated = false;
+let currentSection = 'flexi';
+
+// Función para cambiar entre secciones
+function switchSection(section) {
+    currentSection = section;
+    
+    // Ocultar todas las secciones
+    document.getElementById('flexiSection').style.display = 'none';
+    document.getElementById('pp6Section').style.display = 'none';
+    
+    // Mostrar la sección seleccionada
+    if (section === 'flexi') {
+        document.getElementById('flexiSection').style.display = 'block';
+    } else if (section === 'pp6') {
+        document.getElementById('pp6Section').style.display = 'block';
+    }
+    
+    // Actualizar botones activos
+    document.querySelectorAll('.topbar-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-section="${section}"]`).classList.add('active');
+}
 
 // Obtener los valores seleccionados del formulario
 function getSelectedValues() {
@@ -360,3 +383,126 @@ function generateFeesTable() {
 document.addEventListener('DOMContentLoaded', function() {
     // No generar tabla automáticamente
 });
+
+// ========== FUNCIONES PARA PP6 ==========
+
+let pp6TableGenerated = false;
+
+// Parsear datos del textarea de PP6
+function parsePP6Data() {
+    const textarea = document.getElementById('pp6Data');
+    const data = textarea.value.trim();
+    
+    if (!data) {
+        alert('Por favor, pega los datos en el textarea');
+        return null;
+    }
+    
+    const lines = data.split('\n').filter(line => line.trim() !== '');
+    const rows = [];
+    
+    // Saltar la primera línea si es el encabezado
+    const startIndex = lines[0].toLowerCase().includes('total amount') || lines[0].toLowerCase().includes('monthly fee') ? 1 : 0;
+    
+    for (let i = startIndex; i < lines.length; i++) {
+        const line = lines[i].trim();
+        // Separar por tabulación o múltiples espacios
+        const parts = line.split(/\t+|\s{2,}/).filter(part => part.trim() !== '');
+        
+        if (parts.length >= 2) {
+            const totalAmount = parts[0].trim();
+            const monthlyFee = parts[parts.length - 1].trim();
+            rows.push({ totalAmount, monthlyFee });
+        }
+    }
+    
+    return rows;
+}
+
+// Generar tabla PP6
+function generatePP6Table() {
+    const rows = parsePP6Data();
+    
+    if (!rows || rows.length === 0) {
+        alert('No se pudieron procesar los datos. Asegúrate de que el formato sea correcto.');
+        return;
+    }
+    
+    let html = '<table>';
+    
+    // Encabezado
+    html += '<thead><tr>';
+    html += '<th>Total Amount</th>';
+    html += '<th class="fee-header">Monthly Fee</th>';
+    html += '</tr></thead>';
+    
+    // Cuerpo
+    html += '<tbody>';
+    
+    rows.forEach(row => {
+        html += '<tr>';
+        html += `<td class="row-header">${row.totalAmount}</td>`;
+        html += `<td contenteditable="true">${row.monthlyFee}</td>`;
+        html += '</tr>';
+    });
+    
+    html += '</tbody></table>';
+    
+    const pp6TableContainer = document.getElementById('pp6TableContainer');
+    const fullContent = `
+        <div class="table-content">
+            <img src="https://cdn.prod.website-files.com/62b803c519da726951bd71c2/62b803c519da72c35fbd72a2_Logo.svg" alt="Logo" class="table-logo">
+            <h2>PP6 - Fee Structure</h2>
+        </div>
+        ${html}
+    `;
+    pp6TableContainer.innerHTML = fullContent;
+    pp6TableContainer.classList.add('show');
+    
+    pp6TableGenerated = true;
+    document.getElementById('downloadPP6Btn').disabled = false;
+}
+
+// Descargar tabla PP6 como imagen
+async function downloadPP6TableAsImage() {
+    if (!pp6TableGenerated) {
+        alert('Primero debes generar la tabla');
+        return;
+    }
+
+    const tableContainer = document.getElementById('pp6TableContainer');
+    
+    try {
+        // Importar html2canvas dinámicamente
+        if (typeof html2canvas === 'undefined') {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+            document.head.appendChild(script);
+            
+            await new Promise((resolve, reject) => {
+                script.onload = resolve;
+                script.onerror = reject;
+            });
+        }
+
+        const canvas = await html2canvas(tableContainer, {
+            scale: 2,
+            backgroundColor: '#ffffff',
+            logging: false,
+            useCORS: true
+        });
+
+        canvas.toBlob((blob) => {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = `pp6-fee-structure-${new Date().getTime()}.jpg`;
+            link.href = url;
+            link.click();
+            URL.revokeObjectURL(url);
+        }, 'image/jpeg', 0.95);
+
+    } catch (error) {
+        console.error('Error al generar la imagen:', error);
+        alert('Hubo un error al generar la imagen. Por favor, intenta de nuevo.');
+    }
+}
