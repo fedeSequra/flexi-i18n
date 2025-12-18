@@ -82,13 +82,12 @@
             <div class="button-group">
                 <button onclick="generateTable()" class="btn-generate">Generar Tabla</button>
                 <button onclick="downloadTableAsImage()" class="btn-download" id="downloadBtn" disabled>Descargar JPG</button>
-            </div>
-            
-            <div class="fees-table-checkbox">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="showFeesTable" onchange="toggleFeesTable()">
-                    <span>Añadir tabla de Fees > 3000€</span>
-                </label>
+                <div class="fees-table-checkbox-inline">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="showFeesTable" onchange="toggleFeesTable()">
+                        <span>Añadir tabla de Fees &gt; 3000€</span>
+                    </label>
+                </div>
             </div>
         </div>
 
