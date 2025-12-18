@@ -214,53 +214,70 @@ function downloadTableAsImage() {
         return;
     }
 
-    // Crear contenedor temporal con ambas tablas
+    // Ancho de referencia: el del contenedor visible de la app
+    const appContainer = document.querySelector('.container');
+    const targetWidth = appContainer ? appContainer.offsetWidth : 1200;
+
+    // Crear contenedor temporal con ambas tablas, manteniendo el mismo ancho
     const tempContainer = document.createElement('div');
     tempContainer.style.position = 'absolute';
+    tempContainer.style.top = '0';
     tempContainer.style.left = '-9999px';
     tempContainer.style.backgroundColor = '#ffffff';
     tempContainer.style.padding = '30px';
-    
-    // Copiar la tabla principal
-    tempContainer.appendChild(tableContainer.cloneNode(true));
-    
+    tempContainer.style.width = `${targetWidth}px`;
+    tempContainer.style.boxSizing = 'border-box';
+
+    // Clonar tabla principal y asegurar que sea visible en el clon
+    const mainClone = tableContainer.cloneNode(true);
+    mainClone.style.display = 'block';
+    tempContainer.appendChild(mainClone);
+
+    // Separador visual entre tablas
+    const spacer = document.createElement('div');
+    spacer.style.height = '24px';
+
     // Agregar la tabla de Fees si está marcada
     const showFeesCheckbox = document.getElementById('showFeesTable');
     if (showFeesCheckbox && showFeesCheckbox.checked) {
         const feesTableContainer = document.getElementById('feesTableContainer');
         if (feesTableContainer && feesTableContainer.querySelector('table')) {
-            tempContainer.appendChild(feesTableContainer.cloneNode(true));
+            tempContainer.appendChild(spacer);
+            const feesClone = feesTableContainer.cloneNode(true);
+            feesClone.style.display = 'block';
+            tempContainer.appendChild(feesClone);
         }
     }
-    
+
     document.body.appendChild(tempContainer);
 
-    // Usar html2canvas para capturar todo el contenedor (logo, título y tabla)
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    script.onload = function() {
-        html2canvas(tempContainer, {
-            scale: 2,
-            backgroundColor: '#ffffff',
-            logging: false,
-            useCORS: true,
-            allowTaint: true
-        }).then(canvas => {
-            // Convertir a JPG y descargar
-            const link = document.createElement('a');
-            link.href = canvas.toDataURL('image/jpeg', 0.95);
-            link.download = `tabla-flexi-${new Date().getTime()}.jpg`;
-            link.click();
-            
-            // Eliminar contenedor temporal
-            document.body.removeChild(tempContainer);
-        }).catch(err => {
-            console.error('Error al generar imagen:', err);
-            alert('Error al descargar la tabla como imagen');
-            document.body.removeChild(tempContainer);
-        });
-    };
-    document.head.appendChild(script);
+    const runCapture = () => html2canvas(tempContainer, {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        logging: false,
+        useCORS: true,
+        allowTaint: true
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.download = `tabla-flexi-${new Date().getTime()}.jpg`;
+        link.click();
+        document.body.removeChild(tempContainer);
+    }).catch(err => {
+        console.error('Error al generar imagen:', err);
+        alert('Error al descargar la tabla como imagen');
+        document.body.removeChild(tempContainer);
+    });
+
+    // Cargar html2canvas solo si no está disponible
+    if (window.html2canvas) {
+        runCapture();
+    } else {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        script.onload = runCapture;
+        document.head.appendChild(script);
+    }
 }
 
 // Toggle para mostrar/ocultar tabla de Fees > 3000€
