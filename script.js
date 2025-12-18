@@ -208,17 +208,38 @@ function downloadTableAsImage() {
         return;
     }
 
-    const tableContainer = document.querySelector('.table-container');
+    const tableContainer = document.getElementById('tableContainer');
     if (!tableContainer || !tableContainer.querySelector('table')) {
         alert('No hay tabla para descargar');
         return;
     }
 
+    // Crear contenedor temporal con ambas tablas
+    const tempContainer = document.createElement('div');
+    tempContainer.style.position = 'absolute';
+    tempContainer.style.left = '-9999px';
+    tempContainer.style.backgroundColor = '#ffffff';
+    tempContainer.style.padding = '30px';
+    
+    // Copiar la tabla principal
+    tempContainer.appendChild(tableContainer.cloneNode(true));
+    
+    // Agregar la tabla de Fees si está marcada
+    const showFeesCheckbox = document.getElementById('showFeesTable');
+    if (showFeesCheckbox && showFeesCheckbox.checked) {
+        const feesTableContainer = document.getElementById('feesTableContainer');
+        if (feesTableContainer && feesTableContainer.querySelector('table')) {
+            tempContainer.appendChild(feesTableContainer.cloneNode(true));
+        }
+    }
+    
+    document.body.appendChild(tempContainer);
+
     // Usar html2canvas para capturar todo el contenedor (logo, título y tabla)
     const script = document.createElement('script');
     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
     script.onload = function() {
-        html2canvas(tableContainer, {
+        html2canvas(tempContainer, {
             scale: 2,
             backgroundColor: '#ffffff',
             logging: false,
@@ -230,12 +251,92 @@ function downloadTableAsImage() {
             link.href = canvas.toDataURL('image/jpeg', 0.95);
             link.download = `tabla-flexi-${new Date().getTime()}.jpg`;
             link.click();
+            
+            // Eliminar contenedor temporal
+            document.body.removeChild(tempContainer);
         }).catch(err => {
             console.error('Error al generar imagen:', err);
             alert('Error al descargar la tabla como imagen');
+            document.body.removeChild(tempContainer);
         });
     };
     document.head.appendChild(script);
+}
+
+// Toggle para mostrar/ocultar tabla de Fees > 3000€
+function toggleFeesTable() {
+    const checkbox = document.getElementById('showFeesTable');
+    const feesTableContainer = document.getElementById('feesTableContainer');
+    
+    if (checkbox.checked) {
+        generateFeesTable();
+        feesTableContainer.style.display = 'block';
+    } else {
+        feesTableContainer.style.display = 'none';
+    }
+}
+
+// Generar tabla de Fees > 3000€ con valores fijos
+function generateFeesTable() {
+    const feesData = {
+        installments: [3, 6, 9, 12],
+        from: '3,001.00 €',
+        percentages: {
+            3: '3.45%',
+            6: '4.45%',
+            9: '5.55%',
+            12: '5.75%'
+        },
+        transactionCost: '0.00 €'
+    };
+    
+    let html = '<table>';
+    
+    // Encabezado
+    html += '<thead><tr>';
+    html += '<th>Instalments</th>';
+    feesData.installments.forEach(installment => {
+        html += `<th class="fee-header">${installment}</th>`;
+    });
+    html += '</tr></thead>';
+    
+    // Cuerpo
+    html += '<tbody>';
+    
+    // Fila: From
+    html += '<tr>';
+    html += '<td class="row-header">From</td>';
+    feesData.installments.forEach(() => {
+        html += `<td>${feesData.from}</td>`;
+    });
+    html += '</tr>';
+    
+    // Fila: Percentage
+    html += '<tr>';
+    html += '<td class="row-header">Percentage</td>';
+    feesData.installments.forEach(installment => {
+        html += `<td>${feesData.percentages[installment]}</td>`;
+    });
+    html += '</tr>';
+    
+    // Fila: Transaction Cost
+    html += '<tr>';
+    html += '<td class="row-header">Transaction Cost</td>';
+    feesData.installments.forEach(() => {
+        html += `<td>${feesData.transactionCost}</td>`;
+    });
+    html += '</tr>';
+    
+    html += '</tbody></table>';
+    
+    const feesTableContainer = document.getElementById('feesTableContainer');
+    const fullContent = `
+        <div class="table-content">
+            <h2>Fees > 3000€</h2>
+        </div>
+        ${html}
+    `;
+    feesTableContainer.innerHTML = fullContent;
 }
 
 // Generar tabla al cargar la página (deshabilitado)

@@ -133,6 +133,18 @@ body {
     gap: 12px;
 }
 
+.fees-table-checkbox {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.fees-table-container {
+    margin-top: 0 !important;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
 .btn-generate,
 .btn-export,
 .btn-download {
