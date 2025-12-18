@@ -75,7 +75,14 @@ function generateTable() {
     html += '</tbody></table>';
     
     const tableContainer = document.getElementById('tableContainer');
-    tableContainer.innerHTML = html;
+    const fullContent = `
+        <div class="table-content">
+            <img src="https://cdn.prod.website-files.com/62b803c519da726951bd71c2/62b803c519da72c35fbd72a2_Logo.svg" alt="Logo" class="table-logo">
+            <h2>Table of Fees</h2>
+        </div>
+        ${html}
+    `;
+    tableContainer.innerHTML = fullContent;
     tableContainer.classList.add('show');
     
     tableGenerated = true;
@@ -201,20 +208,22 @@ function downloadTableAsImage() {
         return;
     }
 
-    const table = document.querySelector('.table-container table');
-    if (!table) {
+    const tableContainer = document.querySelector('.table-container');
+    if (!tableContainer || !tableContainer.querySelector('table')) {
         alert('No hay tabla para descargar');
         return;
     }
 
-    // Usar html2canvas para capturar la tabla como imagen
+    // Usar html2canvas para capturar todo el contenedor (logo, título y tabla)
     const script = document.createElement('script');
     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
     script.onload = function() {
-        html2canvas(table, {
+        html2canvas(tableContainer, {
             scale: 2,
             backgroundColor: '#ffffff',
-            logging: false
+            logging: false,
+            useCORS: true,
+            allowTaint: true
         }).then(canvas => {
             // Convertir a JPG y descargar
             const link = document.createElement('a');
